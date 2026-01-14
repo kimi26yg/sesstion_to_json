@@ -33,23 +33,24 @@ def classify_image(prompt, img_list, model):
 
 
 prompt = """
-**Role:** You are a professional Running Data Analyst.
-**Task:** Extract data from the provided images of a single running session and organize them into the specified JSON format.
+**Role:** Professional Running Data Analyst.
+**Task:** Extract detailed running metrics from the provided images and organize them into a structured JSON.
 
 **Image Sequence Guide:**
-1. **First Image:** Overall summary (Distance, Time, Pace, etc.)
-2. **Second Image:** Heart rate analysis and Zones.
-    - **Note:** The Maximum Heart Rate (Max HR) value is located in the **top-right corner of the heart rate graph.**
-3. **Third Image onwards:** Continuous split (pace) charts. Please combine all splits into one sequential list.
+1. **First Image:** Overall summary (Distance, Time, Pace, Date, etc.).
+2. **Second Image:** Heart rate analysis. 
+   - **Note:** The Maximum Heart Rate (Max HR) value is specifically located in the **top-right corner of the heart rate graph.**
+3. **Third Image onwards:** Detailed Split (Pace) charts. Each row typically contains KM, Pace, Average Heart Rate, and Cadence. Combine all pages into one sequential list.
 
 **Extraction Requirements:**
-- Extract numerical values only (omit units).
+- Extract numerical values only (omit units like 'km', 'bpm', 'spm').
 - Maintain time formats: `HH:MM:SS` or `MM:SS`.
-- **CRITICAL:** If split charts (from Image 3+) overlap or repeat the same KM, merge them into a unique, chronological list (1km, 2km, 3km...).
-- If a data point is missing, use `null`.
+- **Splits Data:** For each kilometer, ensure you capture `pace`, `avg_hr`, and `cadence`.
+- **Merge Logic:** If images overlap (e.g., KM 10 appears on both Image 3 and 4), merge them to ensure the `splits` list is unique and chronological.
+- If a specific value (like cadence) is missing for a split, use `null`.
 
 **Output Format (JSON):**
-
+```json
 {
   "summary": {
     "total_distance_km": 00.00,
@@ -57,7 +58,7 @@ prompt = """
     "average_pace": "0'00\"",
     "date": "YYYY-MM-DD"
   },
-  "heart_rate": {
+  "heart_rate_overall": {
     "average_bpm": 0,
     "max_bpm": 0,
     "zones_minutes": {
@@ -69,8 +70,18 @@ prompt = """
     }
   },
   "splits": [
-    {"km": 1, "pace": "0'00\""},
-    {"km": 2, "pace": "0'00\""}
+    {
+      "km": 1,
+      "pace": "0'00\"",
+      "avg_hr": 0,
+      "cadence": 0
+    },
+    {
+      "km": 2,
+      "pace": "0'00\"",
+      "avg_hr": 0,
+      "cadence": 0
+    }
   ]
 }
 """
