@@ -1,3 +1,2 @@
 Pillow
 google-genai
-streamlit
