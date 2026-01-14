@@ -39,6 +39,7 @@ prompt = """
 **Image Sequence Guide:**
 1. **First Image:** Overall summary (Distance, Time, Pace, etc.)
 2. **Second Image:** Heart rate analysis and Zones.
+    - **Note:** The Maximum Heart Rate (Max HR) value is located in the **top-right corner of the heart rate graph.**
 3. **Third Image onwards:** Continuous split (pace) charts. Please combine all splits into one sequential list.
 
 **Extraction Requirements:**
